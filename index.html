@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GCP: Monorepo vs Separate Repos</title>
+    <link rel="stylesheet" href="anubhav.css">
+</head>
+
+<body>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-badge">☁️ Google Cloud Platform</div>
+        <h1>Monorepo vs <span>Separate Repos</span></h1>
+        <p>A professional comparison for deploying Next.js + Python on GCP with Cloud Run and Cloud SQL</p>
+        <div class="stack-tags">
+            <span class="tag">Frontend <b>Next.js</b></span>
+            <span class="tag">Backend <b>Python API</b></span>
+            <span class="tag">Database <b>PostgreSQL / Cloud SQL</b></span>
+            <span class="tag">Deploy <b>Cloud Run</b></span>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- COMPARISON TABLE -->
+        <section>
+            <div class="section-title">Side-by-Side Comparison</div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>🗂 Monorepo (Single Repo)</th>
+                            <th>📦 Separate Repositories</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Repository</td>
+                            <td>One GitHub repo containing frontend + backend</td>
+                            <td>Two repos: one for frontend, one for backend</td>
+                        </tr>
+                        <tr>
+                            <td>Example Structure</td>
+                            <td><code>repo/frontend</code> + <code>repo/backend</code></td>
+                            <td><code>frontend-repo</code> and <code>backend-repo</code></td>
+                        </tr>
+                        <tr>
+                            <td>Deployment on GCP</td>
+                            <td>Cloud Build deploys both services</td>
+                            <td>Each repo has its own Cloud Build pipeline</td>
+                        </tr>
+                        <tr>
+                            <td>Cloud Run Services</td>
+                            <td><span class="badge badge-blue">2 services</span> (frontend + backend)</td>
+                            <td><span class="badge badge-green">2 services</span> (frontend + backend)</td>
+                        </tr>
+                        <tr>
+                            <td>CI/CD Setup</td>
+                            <td>Slightly complex pipeline</td>
+                            <td>Simpler, isolated pipelines</td>
+                        </tr>
+                        <tr>
+                            <td>Build Time</td>
+                            <td>Longer — larger repo size</td>
+                            <td>Faster builds per service</td>
+                        </tr>
+                        <tr>
+                            <td>Code Sharing</td>
+                            <td>Easy via shared folder</td>
+                            <td>Harder — requires packages/libs</td>
+                        </tr>
+                        <tr>
+                            <td>Scaling Services</td>
+                            <td>Independent scaling on Cloud Run</td>
+                            <td>Independent scaling on Cloud Run</td>
+                        </tr>
+                        <tr>
+                            <td>Access Control</td>
+                            <td>Hard to restrict per service</td>
+                            <td>Easier per-repo permissions</td>
+                        </tr>
+                        <tr>
+                            <td>Team Collaboration</td>
+                            <td>Better for small teams</td>
+                            <td>Better for larger teams</td>
+                        </tr>
+                        <tr>
+                            <td>Maintenance</td>
+                            <td>Easy at early stage</td>
+                            <td>Cleaner long term</td>
+                        </tr>
+                        <tr>
+                            <td>Debugging</td>
+                            <td>Everything in one repo</td>
+                            <td>Clear service separation</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <hr />
+
+        <!-- ARCHITECTURE -->
+        <section>
+            <div class="section-title">Example Architecture on GCP</div>
+            <div class="arch-box">
+                <div>
+                    <span class="arch-node node-user">👤 Users</span>
+                </div>
+                <span class="arch-arrow">↓</span>
+                <div>
+                    <span class="arch-node node-fe">⚡ Frontend (Next.js)<br /><small
+                            style="font-weight:400;opacity:.7">Cloud Run / Vercel</small></span>
+                </div>
+                <div class="arch-label">API Request</div>
+                <span class="arch-arrow">↓</span>
+                <div>
+                    <span class="arch-node node-be">🐍 Backend (Python FastAPI)<br /><small
+                            style="font-weight:400;opacity:.7">Cloud Run</small></span>
+                </div>
+                <span class="arch-arrow">↓</span>
+                <div>
+                    <span class="arch-node node-db">🗄 Cloud SQL (PostgreSQL)</span>
+                </div>
+            </div>
+        </section>
+
+        <hr />
+
+        <!-- DEPLOYMENT FLOW -->
+        <section>
+            <div class="section-title">Deployment Flow — Separate Repos</div>
+            <div class="cards-2">
+                <div>
+                    <div class="code-wrap">
+                        <div class="code-header">
+                            <div class="code-dot dot-r"></div>
+                            <div class="code-dot dot-y"></div>
+                            <div class="code-dot dot-g"></div>
+                            <span class="code-filename">frontend-repo / deploy.sh</span>
+                        </div>
+                        <pre><span class="cm"># Deploy Frontend to Cloud Run</span>
+<span class="fn">gcloud</span> run deploy <span class="str">frontend-service</span> \
+  --source . \
+  --region <span class="fl">us-central1</span> \
+  --allow-unauthenticated</pre>
+                    </div>
+                </div>
+                <div>
+                    <div class="code-wrap">
+                        <div class="code-header">
+                            <div class="code-dot dot-r"></div>
+                            <div class="code-dot dot-y"></div>
+                            <div class="code-dot dot-g"></div>
+                            <span class="code-filename">backend-repo / deploy.sh</span>
+                        </div>
+                        <pre><span class="cm"># Deploy Backend to Cloud Run</span>
+<span class="fn">gcloud</span> run deploy <span class="str">backend-service</span> \
+  --source . \
+  --region <span class="fl">us-central1</span> \
+  --allow-unauthenticated</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr />
+
+        <!-- DOMAIN SETUP -->
+        <section>
+            <div class="section-title">Domain Setup</div>
+            <div class="domain-grid" style="margin-bottom:24px;">
+                <div class="domain-card">
+                    <div class="domain-icon di-blue">🌐</div>
+                    <div>
+                        <h4>Frontend URL</h4>
+                        <p>app.company.com</p>
+                        <div style="font-size:12px;color:var(--muted);margin-top:4px;">→ Next.js on Cloud Run</div>
+                    </div>
+                </div>
+                <div class="domain-card">
+                    <div class="domain-icon di-green">🔗</div>
+                    <div>
+                        <h4>Backend API URL</h4>
+                        <p>api.company.com</p>
+                        <div style="font-size:12px;color:var(--muted);margin-top:4px;">→ Python FastAPI on Cloud Run
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="code-wrap">
+                <div class="code-header">
+                    <div class="code-dot dot-r"></div>
+                    <div class="code-dot dot-y"></div>
+                    <div class="code-dot dot-g"></div>
+                    <span class="code-filename">Frontend API Call Example</span>
+                </div>
+                <pre><span class="cm">// Next.js calling the Python backend</span>
+<span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">"https://api.company.com/orders"</span>);
+<span class="kw">const</span> data = <span class="kw">await</span> response.<span class="fn">json</span>();</pre>
+            </div>
+        </section>
+
+        <hr />
+
+        <!-- COMMON SERVICES -->
+        <section>
+            <div class="section-title">What Most GCP SaaS Systems Use</div>
+            <div class="table-wrap">
+                <table class="svc-table">
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>GCP Service</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Frontend</td>
+                            <td><span class="svc-pill pill-blue">Cloud Run</span></td>
+                            <td>Serves Next.js SSR / static assets</td>
+                        </tr>
+                        <tr>
+                            <td>Backend API</td>
+                            <td><span class="svc-pill pill-green">Cloud Run</span></td>
+                            <td>Python FastAPI REST endpoints</td>
+                        </tr>
+                        <tr>
+                            <td>Database</td>
+                            <td><span class="svc-pill pill-yellow">Cloud SQL</span></td>
+                            <td>Managed PostgreSQL instance</td>
+                        </tr>
+                        <tr>
+                            <td>Cache (optional)</td>
+                            <td><span class="svc-pill pill-purple">Memorystore Redis</span></td>
+                            <td>Session caching, rate limiting</td>
+                        </tr>
+                        <tr>
+                            <td>Storage</td>
+                            <td><span class="svc-pill pill-blue">Cloud Storage</span></td>
+                            <td>Media files, static assets, backups</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <hr />
+
+        <!-- RECOMMENDATION -->
+        <section>
+            <div class="rec-box">
+                <div class="rec-header">
+                    <div class="rec-icon">✅</div>
+                    <div>
+                        <h2>Recommendation: Use Separate Repositories</h2>
+                        <p>For Next.js + Python deployed on GCP, separate repos is the better long-term choice</p>
+                    </div>
+                </div>
+                <div class="cards-2">
+                    <div class="card green">
+                        <h3 style="color:var(--accent2)">✅ Why Separate Repos Wins</h3>
+                        <ul>
+                            <li>Cleaner, isolated deployments per service</li>
+                            <li>Simpler, faster CI/CD pipelines</li>
+                            <li>Faster builds — only changed service rebuilds</li>
+                            <li>Better service separation and ownership</li>
+                            <li>Easier access control per repository</li>
+                            <li>Scales naturally as your team grows</li>
+                        </ul>
+                    </div>
+                    <div class="card blue">
+                        <h3 style="color:var(--accent)">🗂 When Monorepo Makes Sense</h3>
+                        <ul>
+                            <li>Very early stage with 1–2 developers</li>
+                            <li>Heavy code sharing between frontend/backend</li>
+                            <li>Atomic cross-service commits needed</li>
+                            <li>Team comfortable with complex pipelines</li>
+                            <li>Shared type definitions or schema files</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="rec-reasons">
+                    <div class="rec-reason">
+                        <div class="icon">🚀</div>
+                        <p>Faster<br />Builds</p>
+                    </div>
+                    <div class="rec-reason">
+                        <div class="icon">🔧</div>
+                        <p>Simpler<br />CI/CD</p>
+                    </div>
+                    <div class="rec-reason">
+                        <div class="icon">🔒</div>
+                        <p>Better<br />Access Control</p>
+                    </div>
+                    <div class="rec-reason">
+                        <div class="icon">📦</div>
+                        <p>Clean<br />Separation</p>
+                    </div>
+                    <div class="rec-reason">
+                        <div class="icon">📈</div>
+                        <p>Scales with<br />Team</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr />
+
+        <!-- FINAL STRUCTURE -->
+        <section>
+            <div class="section-title">✅ Final Recommended Structure</div>
+            <div class="struct-grid">
+                <div class="struct-card">
+                    <div class="struct-header"><span>🐙</span> GitHub</div>
+                    <div class="struct-body">
+                        <div class="tree-root">GitHub</div>
+                        <div><span class="tree-branch">│</span></div>
+                        <div><span class="tree-branch">├── </span><span class="tree-leaf-blue">frontend-nextjs</span>
+                        </div>
+                        <div><span class="tree-branch">└── </span><span class="tree-leaf-green">backend-python</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="struct-card">
+                    <div class="struct-header"><span>☁️</span> GCP Infrastructure</div>
+                    <div class="struct-body">
+                        <div class="tree-root">Cloud Run</div>
+                        <div><span class="tree-branch"> ├── </span><span class="tree-leaf-blue">frontend-service</span>
+                        </div>
+                        <div><span class="tree-branch"> └── </span><span class="tree-leaf-green">backend-service</span>
+                        </div>
+                        <div>&nbsp;</div>
+                        <div class="tree-root">Cloud SQL</div>
+                        <div><span class="tree-branch"> └── </span><span class="tree-leaf-yellow">PostgreSQL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        Built for GCP · Next.js + Python FastAPI + Cloud SQL · Cloud Run Deployment Guide<br>
+        Research by Anubhav
+    </footer>
+
+</body>
+
+</html>
